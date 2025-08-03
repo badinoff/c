@@ -1,0 +1,15 @@
+# Executables
+*.out
+ch11YearBorn
+ch8PizzaSlicesScanF
+counter
+happiness
+initialsAgeFavNum
+loopmultiplication
+testing
+testing1
+tirePrices
+
+# Excluded .c files
+testing.c
+testing1.c

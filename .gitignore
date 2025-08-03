@@ -1,0 +1,30 @@
+# === Ignore build output ===
+**/bin/
+
+# === Ignore unwanted file types ===
+*.exe            # Windows executables
+*.out            # General compiled output
+*.sh             # Shell scripts (e.g., commit.sh, push_version.sh)
+*.o              # Object files
+*.code-workspace # VS Code workspace files
+*.goutputstream* # Temporary output files
+*~               # Backup files (e.g., Vim)
+
+# === Ignore IDE/project configuration ===
+.vscode/
+.DS_Store
+
+# === Ignore specific C files and folders ===
+random-projects/percentage.c
+random-projects/percentage
+random-projects/temp-tests/
+random-projects/cForAbsoluteBeginners/testing.c
+random-projects/cForAbsoluteBeginners/testing1.c
+
+# === Secrets or local-only files ===
+dockerHubPAT
+ghcrDockerTokenCs50
+ssh-keygen-output
+cs50/sshKey
+cs50/sshKey.pub
+header.h
