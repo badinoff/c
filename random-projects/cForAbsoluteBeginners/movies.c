@@ -13,13 +13,11 @@ int main()
 
     do{
         if(scanf(" %d", &numMovies) != 1) //check if input is an integer (guessing based on %d; 1 is a successful output of scanf?)
-        {
             {
                 printf("Please enter a positive non-zero integer: ");
                 while(getchar() != '\n'); //clear buffer
                 numMovies = -1; //set to -1 to keep looping
             }
-        }
         else if(numMovies < 1)
             {
                 printf("Please enter a positive non-zero integer: ");
@@ -29,15 +27,8 @@ int main()
 
     for(counter = 1; counter <= numMovies; counter++)
     {
-        if(counter == 1)
-        {
-            strcpy(moviePrompt, "first");
-        }
-        else
-        {
-            strcpy(moviePrompt, "next");
-        }
-
+        strcpy(moviePrompt, (counter == 1) ? "first" : "next");
+        
         printf("what is the name of the %s movie? ", moviePrompt);
         scanf(" %[^\n]", movieName);
         printf("On a scale of 1 to 10 how would you rate it? ");
