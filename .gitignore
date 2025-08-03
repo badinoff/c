@@ -28,3 +28,14 @@ ssh-keygen-output
 cs50/sshKey
 cs50/sshKey.pub
 header.h
+.goutputstream-*
+cs50/.devcontainer/
+cs50/devcontainer.json
+**/*.code-workspace
+**/*.sh
+.goutputstream-*
+cs50/.devcontainer/
+cs50/devcontainer.json
+**/*.code-workspace
+**/*.sh
+cs50/package-lock.json
