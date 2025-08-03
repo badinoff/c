@@ -12,13 +12,13 @@ int main()
     printf("How many movies did you see this year? ");
 
     do{
-        if(scanf(" %d", &numMovies) != 1) //check if input is an integer (guessing based on %d; 1 is a successful output of scanf?)
+        if(scanf(" %d", &numMovies) != 1) //check if input is an integer; %d expects an integer; !=1 disqualifies anything except a single integer 
             {
                 printf("Please enter a positive non-zero integer: ");
-                while(getchar() != '\n'); //clear buffer
+                while(getchar() != '\n'); //clear buffer - standard C idiom
                 numMovies = -1; //set to -1 to keep looping
             }
-        else if(numMovies < 1)
+        else if(numMovies < 1) //disqualifies zero and negative integers
             {
                 printf("Please enter a positive non-zero integer: ");
                 
@@ -27,10 +27,10 @@ int main()
 
     for(counter = 1; counter <= numMovies; counter++)
     {
-        strcpy(moviePrompt, (counter == 1) ? "first" : "next");
+        strcpy(moviePrompt, (counter == 1) ? "first" : "next"); //uses "first" in the prompt for the first movie name and "next" in all subsequent promps
         
-        printf("what is the name of the %s movie? ", moviePrompt);
-        scanf(" %[^\n]", movieName);
+        printf("what is the name of the %s movie? ", moviePrompt); //capitalizes on the previous line
+        scanf(" %[^\n]", movieName); // %[^\n] allows scanf to accept input with spaces
         printf("On a scale of 1 to 10 how would you rate it? ");
         
         do{
@@ -45,7 +45,7 @@ int main()
                 {
                     printf("Please enter an integer from 1 to 10! ");
                 }
-        }while(rating < 1 || rating > 10);
+        }while(rating < 1 || rating > 10); //sets upper and lower limits for acceptable user ratings
 
         if(rating > favRating)
         {
