@@ -12,7 +12,8 @@ int main()
     printf("How many movies did you see this year? ");
 
     do{
-        if(scanf(" %d", &numMovies) != 1) //check if input is an integer; %d expects an integer; !=1 disqualifies anything except a single integer 
+        if(scanf(" %d", &numMovies) != 1) //check if input is an integer; %d expects an integer; !=1 means that scanf wasn't able to CONVERT successfully
+                                          //because it was not an integer (dictated by %d) and returned a 0, not 1 (1 = success).
             {
                 printf("Please enter a positive non-zero integer: ");
                 while(getchar() != '\n'); //clear buffer - standard C idiom
@@ -33,8 +34,10 @@ int main()
         scanf(" %[^\n]", movieName); // %[^\n] allows scanf to accept input with spaces
         printf("On a scale of 1 to 10 how would you rate it? ");
         
+
+        //collect rating from the user and check if it's an integer (not string or other data type) between 0 and 11 (so from 1 to 10)
         do{
-            if(scanf(" %d", &rating) != 1)
+            if(scanf(" %d", &rating) != 1) //checks if input is an integer (!= 1 means that it couldn't convert (e.g. user entered "abc"))
                 {
                     printf("Please enter an integer from 1 to 10! ");
                     while(getchar() != '\n');
@@ -47,6 +50,8 @@ int main()
                 }
         }while(rating < 1 || rating > 10); //sets upper and lower limits for acceptable user ratings
 
+
+        //logic for determining most/least favorite movie
         if(rating > favRating)
         {
             strcpy(favMovie, movieName);
