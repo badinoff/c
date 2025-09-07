@@ -30,6 +30,7 @@ int main()
         if(isdigit(password[i])){
 
             hasDigit = 1;
+            continue;
         }
 
         else{
