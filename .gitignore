@@ -20,6 +20,7 @@ random-projects/percentage
 random-projects/temp-tests/
 random-projects/cForAbsoluteBeginners/testing.c
 random-projects/cForAbsoluteBeginners/testing1.c
+random-projects/calcuBoris/grokImprovementsRecallFile.json
 
 # === Secrets or local-only files ===
 dockerHubPAT
