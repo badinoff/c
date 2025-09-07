@@ -9,7 +9,7 @@ int main(void){
     int dice1, dice2, total1, total2;
     char ans;
 
-    srand(time(NULL) ^ getpid());
+    srand(time(NULL) ^ getpid()); //Generate a "truly" random number using time an arbitrary PID
 
     dice1 = ((rand() % 6) + 1);
     dice2 = ((rand() % 6) + 1);
@@ -17,11 +17,18 @@ int main(void){
 
     printf("First roll: %d and %d, total %d\n", dice1, dice2, total1);
 
+    printf("Try to guess if the next total will be (H)igher, (L)ower or (S)ame: ");
+
     do{
-        printf("Try to guess if the next total will be (H)igher, (L)ower or (S)ame: ");
         scanf(" %c", &ans);
         ans = toupper(ans);
+
+        if((ans != 'L') && (ans != 'H') && (ans != 'S')){
+            printf("Invalid input. Try again: ");
+        }
+
     }while((ans != 'L') && (ans != 'H') && (ans != 'S'));
+
 
     dice1 = ((rand() % 6) + 1);
     dice2 = ((rand() % 6) + 1);
