@@ -1,0 +1,170 @@
+# Cities Game - Project Context & Pseudo Code
+
+## PROJECT BACKGROUND
+**Game Rules**: Player 1 names a city. Player 2 must name a city starting with the last letter of Player 1's city. Players alternate. No city can be repeated.
+
+**Technical Details**:
+- Built from 28MB CSV with 147K world cities → normalized SQL Server DB (70MB)
+- Database: `cities` table with columns: id, name, country_id, population, etc.
+- Final distribution: SQLite database (~50-80MB) + single C executable
+- Target: Zero-installation game (just run the .exe)
+
+**Development Approach**:
+- Start with SQL Server for development
+- Migrate to SQLite for distribution
+- Modular C code design
+- Fixed arrays initially (no dynamic allocation yet)
+
+---
+
+# PSEUDO CODE
+
+## MODULE STRUCTURE
+
+### database.c
+```
+Functions:
+- connect_db() → establish DB connection
+- disconnect_db() → close DB connection
+- city_exists(char *name) → return 1 if city exists, 0 if not
+- get_city_by_name(char *name) → return city details (for case matching)
+- get_hint_city(char starting_letter, int min_population) → return random city for hints
+```
+
+### input_validation.c
+```
+Functions:
+- clean_input(char *input) → strip leading/trailing whitespace, handle case
+- is_valid_characters(char *input) → check for invalid chars (allow: letters, spaces, hyphens, apostrophes, periods)
+- normalize_case(char *input, char *db_name) → match input case to database case
+```
+
+### game_state.c
+```
+Global Variables:
+- int current_player (1 or 2)
+- char last_letter
+- int used_cities[1000] → store city IDs that have been used
+- int used_count → number of cities used
+- int player1_score, player2_score
+- int player_attempts → track attempts for current input
+
+Functions:
+- init_game_state() → reset all variables
+- add_used_city(int city_id) → add to used cities array
+- is_city_used(int city_id) → check if city already used
+- switch_player() → toggle current_player
+- get_last_letter(char *city_name) → extract last letter
+- reset_attempts() → set attempts to 3
+```
+
+### ui.c
+```
+Functions:
+- print_intro() → game name, rules
+- print_prompt(int player_num) → display turn prompt with options
+- print_used_cities() → display all used cities
+- print_score() → current score display
+- print_winner() → final score and winner declaration
+- print_hint(char *hint_city, char *country) → display hint format
+```
+
+## MAIN GAME FLOW
+
+### INITIALIZATION
+```
+1. print_intro()
+2. Prompt "Ready to start? (y/n)"
+3. If 'n', exit
+4. If 'y', continue
+5. connect_db()
+6. init_game_state()
+7. current_player = 1
+8. last_letter = '\0' (no requirement for first city)
+```
+
+### MAIN GAME LOOP
+```
+While (game_active):
+    1. print_prompt(current_player)
+
+    2. Get user input
+
+    3. Check for special commands:
+       - 'H' → provide hint, no points awarded, continue with same player
+       - 'U' → show used cities, continue with same player
+       - 'N' → restart game (init_game_state(), current_player = 1)
+       - 'Q' → end game, print_winner(), exit
+
+    4. If regular city input:
+       a. clean_input(input)
+       b. is_valid_characters(input) → if invalid, reprompt
+       c. If current_player > 1 OR this isn't first move:
+          - Check first letter matches last_letter
+          - If no match: print error, reprompt
+       d. city_exists(input) → if not found, decrement attempts
+          - If attempts = 0: declare other player winner, exit
+          - If attempts > 0: reprompt with attempt count
+       e. is_city_used(city_id) → if used, print error, reprompt
+       f. If all validations pass:
+          - normalize_case(input, db_name)
+          - add_used_city(city_id)
+          - Award point (except Player 1's first city)
+          - last_letter = get_last_letter(input)
+          - reset_attempts()
+          - switch_player()
+```
+
+### SCORING RULES
+```
+- Player 1's first city: 0 points
+- Each valid city after: 1 point
+- Hint usage: 0 points for that turn
+- 3 failed attempts: other player wins
+- Game end: compare scores, declare winner
+```
+
+### HINT SYSTEM
+```
+When 'H' entered:
+1. get_hint_city(last_letter, 500000) → cities with population > 500K
+2. print_hint(city_name_first_3_letters, country_name)
+3. Example: "Can you think of a city beginning with LON in United Kingdom?"
+4. Continue with same player, no points for successful answer
+```
+
+### ATTEMPTS SYSTEM
+```
+- Each player gets 3 attempts per turn
+- Failed attempt = city doesn't exist in DB OR city already used
+- Show remaining attempts: "Invalid city. 2 attempts remaining."
+- After 3 failures: "Game over! Player X wins!"
+```
+
+### ERROR HANDLING (FUTURE SCOPE)
+```
+- DB connection failure → graceful exit
+- No cities starting with required letter → skip to next letter or end game
+- Memory allocation issues → error message and exit
+- Non-English characters → validation error (English only for now)
+```
+
+### IMPLEMENTATION ORDER
+```
+1. database.c → get basic DB connection/queries working
+2. input_validation.c → test input cleaning and validation
+3. game_state.c → implement state tracking
+4. ui.c → create all display functions
+5. main.c → tie everything together in game loop
+6. Testing with SQL Server
+7. Migration to SQLite for distribution
+```
+
+### TECHNICAL NOTES
+```
+- Use fgets() for input (handles spaces)
+- Fixed arrays initially: char city_name[100], int used_cities[1000]
+- Case-insensitive DB comparison, but display DB's original case
+- Store city IDs in used_cities array, not names (more efficient)
+- Compile as single executable + SQLite .db file for distribution
+```

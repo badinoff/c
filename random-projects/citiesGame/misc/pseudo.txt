@@ -1,0 +1,80 @@
+******************************
+Print game intro (name, rules)
+******************************
+
+1. Display rules
+2. Prompt for game start (e.g. ready player 1?); Wait for y/n input
+
+******************
+ACQUIRE USER INPUT
+******************
+
+Player 1
+
+1. Prompt for Player 1 input (fgets? getchar?); scanf - not ideal because of "space" limitation
+2. Check Player 1's input for invalid characters ('-', ''', '.', and perhaps some others can be allowed, but no other specials or numbers; English only for now); Reprompt if invalid input
+3. Strip leading and trailing whitespace if exists
+4. Check Player 1's input against the DB for a valid city
+    a. If city exists, continue;
+    b. If city does not exist, print "error message" and reprompt. Employ attempts logic as outlined in Player 2.4.a unsuccessful attempt write up.
+5. Store Player 1's input as a character string
+6. Handle case
+    a. Compare the input to DB converting both to lower case
+    b. Upon successful match, modify Player's input to match the case in the DB
+7. Determine the last letter of player 1's input and store to be compared later to the first letter of Player 2's input
+8. Store Player 1's entire input to compare against city.name column in the DB during future inputs ("used cities" array)
+9. If this is not the first player 1's attempt, record a point for successful input. Incorporate attempts logic if attempt is unsuccessful
+
+Player 2
+
+1. Prompt for Player 2 input
+2. Check Player 2's input for invalid characters; reprompt if invalid input
+3. Strip leading and trailing whitespace if exists
+4. Parse input out to determine the first character
+5. Compare the first character to Player 1's city's last character
+    a. If characters match
+        - Compare Player 2's input to valid city names in the DB
+            > If city name exists in the DB
+                record a point for Player 2
+                store used city name (cities.id preferably) in "used cities" array
+                determine the last letter of Player 2's input to compare against the first letter of Player 1's next input
+                continue to Player 1's next input
+            > If city name does not exist, print message (invalid city) and reprompt
+                + Allow 3 attempts only and inform player in each reprompt decrementing attempts number with each unsuccessful attempt
+                + After 3 unsuccessful attempts, declare the other player a winner (unless Player 1 only entered the first city and received no points (see SCORE TRACKING below)); quit
+                + If any attempt is successful, award a point and continue to character processing and subsequently to next player's input
+    b. If characters don't match
+        - Print "error" message:
+            > Display Player 1's input
+            > Display a message saying that Player 2 has to pick a city starting with the last letter of Player 1's input + display the letter
+            > Re-prompt Player 2 for input
+
+**************
+SCORE TRACKING
+**************
+
+1. Each correct answer should record a point for the respective player
+2. Player 1's very first input does not record a point
+3. If a player uses a hint, no point is recorded
+
+************************
+Additional functionality
+************************
+
+1. Option to display "used" cities in each prompt (e.g. Player 1, enter your city or type U to see the list of used cities)
+2. Option to request a hint
+    a. Hint will contain the first three letters of a random city (starting with the last letter of previous user's input) and the country
+        - Look only for cities with population > 500,000 (to increase probabilty that a user may know it)
+        - Print hint prompt; Example: "Can you think of a city beginning with XYZ in Canada?"
+3. Option to end game
+    a. Upon reset, display the final score and declare winner
+4. Option to reset game
+    a. Upon exit, display the final score and declare winner
+
+
+    Prompt structure:
+        print: For a hint, type H\n
+        print: For cities that have been named type U\n
+        print: To start a new game, type N\n
+        print: To end the game, type Q\n\n
+        print: Player X, your turn:
